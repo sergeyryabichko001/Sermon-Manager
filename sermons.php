@@ -503,19 +503,40 @@ class SermonManager { // phpcs:ignore
 	 *
 	 * @since 2.15.7
 	 */
+	public static function sermon_is_audio_sermon(){
+
+
+		$args = array(
+			'posts_per_page'    => -1,
+			'post_type'         => 'wpfc_sermon',
+			'post_status'       => 'publish',
+			'meta_query' => array(
+				
+				array(
+					'key'     => 'sermon_audio',
+					'value'   => '',
+					'compare' => '!=',
+				),
+			)
+		);
+		
+		$posts_query = new WP_Query($args);
+		$the_count = $posts_query->post_count;
+		return $the_count;
+	}
 	public static function register_scripts_styles() {
 		wp_register_script( 'wpfc-sm-fb-player', SM_URL . 'assets/vendor/js/facebook-video.js', array(), SM_VERSION );
 		
 		$is_archive = is_archive();
 		$is_audio_displayed = SermonManager::getOption( 'archive_player' );
+		$sermon_is_audio_sermon = SermonManager::sermon_is_audio_sermon();
 		if(!$is_archive || ($is_archive && $is_audio_displayed) ){
 			
-			wp_register_script( 'wpfc-sm-plyr', SM_URL . 'assets/vendor/js/plyr.polyfilled' . ( ( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) ? '' : '' ) . '.js', array(), '3.4.7', \SermonManager::getOption( 'player_js_footer' ) );
-			wp_register_script( 'wpfc-sm-plyr-loader', SM_URL . 'assets/js/plyr' . ( ( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) ? '' : '' ) . '.js', array( 'wpfc-sm-plyr' ), SM_VERSION );
-			
-			
-			
-			wp_register_style( 'wpfc-sm-plyr-css', SM_URL . 'assets/vendor/css/plyr.min.css', array(), '3.4.7' );
+			if(!$is_archive || ($is_archive && $sermon_is_audio_sermon >0)){
+				wp_register_script( 'wpfc-sm-plyr', SM_URL . 'assets/vendor/js/plyr.polyfilled' . ( ( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) ? '' : '' ) . '.js', array(), '3.4.7', \SermonManager::getOption( 'player_js_footer' ) );
+				wp_register_script( 'wpfc-sm-plyr-loader', SM_URL . 'assets/js/plyr' . ( ( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) ? '' : '' ) . '.js', array( 'wpfc-sm-plyr' ), SM_VERSION );
+				wp_register_style( 'wpfc-sm-plyr-css', SM_URL . 'assets/vendor/css/plyr.min.css', array(), '3.4.7' );
+			}
 		}
 		
 		
@@ -890,6 +911,7 @@ class SermonManager { // phpcs:ignore
 }
 
 // Initialize Sermon Manager.
+
 SermonManager::get_instance();
 
 // Fix shortcode pagination.

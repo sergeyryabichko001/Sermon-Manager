@@ -15,12 +15,13 @@ window.addEventListener( 'DOMContentLoaded', function () {
 	} );
 
 	for ( let p in players ) {
+		
 		if ( players.hasOwnProperty( p ) ) {
 			players[ p ].on( 'loadedmetadata ready', function ( event ) {
 				let instance = event.detail.plyr;
-
 				if ( instance.elements.original.dataset.plyr_seek !== undefined ) {
 					instance.currentTime = parseInt( instance.elements.original.dataset.plyr_seek );
+					instance.embed.setCurrentTime(parseInt( instance.elements.original.dataset.plyr_seek ));
 				}
 			} );
 		}
