@@ -114,7 +114,9 @@ function wpfc_sermon_metaboxes() {
 		'name' => esc_html__( 'Video Link', 'sermon-manager-for-wordpress' ),
 		'desc' => esc_html__( 'Paste your link for Vimeo, Youtube, Facebook, or direct video file here', 'sermon-manager-for-wordpress' ),
 		'id'   => 'sermon_video_link',
-		'type' => 'text_url',
+		
+		
+		'type' => 'text',
 	) ) );
 	$sermon_files_meta->add_field( array(
 		'name' => esc_html__( 'Sermon Notes', 'sermon-manager-for-wordpress' ),

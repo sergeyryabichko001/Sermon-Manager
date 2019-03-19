@@ -6100,7 +6100,8 @@ typeof navigator === "object" && (function (global, factory) {
 		attributes: {
 			embed: {
 				provider: 'data-plyr-provider',
-				id: 'data-plyr-embed-id'
+				id: 'data-plyr-embed-id',
+				plyr_seek: 'plyr_seek'
 			}
 		},
 		// API keys
@@ -7801,6 +7802,12 @@ typeof navigator === "object" && (function (global, factory) {
 
 			var iframe = createElement('iframe');
 			var src = format(player.config.urls.vimeo.iframe, id, params);
+			if(this.provider == "vimeo"){
+				src = src + "#t="+this.plyr_seek; 
+			}
+			
+			
+			
 			iframe.setAttribute('src', src);
 			iframe.setAttribute('allowfullscreen', '');
 			iframe.setAttribute('allowtransparency', '');
@@ -9422,6 +9429,11 @@ typeof navigator === "object" && (function (global, factory) {
 						} else {
 							// <div> with attributes
 							this.provider = this.media.getAttribute(this.config.attributes.embed.provider); // Remove attribute
+
+
+
+
+							this.plyr_seek = _this.media.getAttribute('data-plyr_seek');
 
 							this.media.removeAttribute(this.config.attributes.embed.provider);
 						} // Unsupported or missing provider
