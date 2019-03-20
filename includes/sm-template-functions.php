@@ -8,6 +8,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) or die;
 
+
 if ( ! SermonManager::getOption( 'disable_layouts', false ) ) {
 	/**
 	 * Include template files.
@@ -351,7 +352,7 @@ function wpfc_render_video( $url = '', $seek = true ) {
 function wpfc_render_audio( $source = '', $seek = null ) {
 	// For later filtering.
 	$source_orig = $source;
-
+	global $is_sermons_audio_included;
 	// Check if it's a sermon or attachment ID.
 	if ( is_numeric( $source ) ) {
 		$object = get_post( $source );
@@ -364,6 +365,14 @@ function wpfc_render_audio( $source = '', $seek = null ) {
 			case 'wpfc_sermon':
 				$sermon_audio_id     = get_wpfc_sermon_meta( 'sermon_audio_id' );
 				$sermon_audio_url    = get_wpfc_sermon_meta( 'sermon_audio' );
+				if(!empty($sermon_audio_url)){
+					if(!$is_sermons_audio_included){
+						wp_enqueue_script( 'wpfc-sm-plyr' );
+						wp_enqueue_script( 'wpfc-sm-plyr-loader' );
+						wp_enqueue_style( 'wpfc-sm-plyr-css' );
+						$is_sermons_audio_included = true;
+					}
+				}
 				$sermon_audio_url_wp = $sermon_audio_id ? wp_get_attachment_url( intval( $sermon_audio_id ) ) : false;
 
 				$source = $sermon_audio_id && $sermon_audio_url_wp ? $sermon_audio_url_wp : $sermon_audio_url;

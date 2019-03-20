@@ -293,6 +293,9 @@ class SermonManager { // phpcs:ignore
 		load_plugin_textdomain( 'sermon-manager-for-wordpress', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 	}
 
+	public static function enqueue_scripts_styles_player() {
+		echo "okk";
+	}
 	/**
 	 * Enqueue Sermon Manager scripts and styles
 	 *
@@ -349,11 +352,11 @@ class SermonManager { // phpcs:ignore
 					add_action( 'wp_print_scripts', array( __CLASS__, 'maybe_print_cloudflare_plyr' ) );
 					add_action( 'wp_print_footer_scripts', array( __CLASS__, 'maybe_print_cloudflare_plyr' ) );
 				} else {
-					wp_enqueue_script( 'wpfc-sm-plyr' );
-					wp_enqueue_script( 'wpfc-sm-plyr-loader' );
+					// wp_enqueue_script( 'wpfc-sm-plyr' );
+					// wp_enqueue_script( 'wpfc-sm-plyr-loader' );
 				}
 
-				wp_enqueue_style( 'wpfc-sm-plyr-css' );
+				// wp_enqueue_style( 'wpfc-sm-plyr-css' );
 
 				break;
 		}
@@ -503,41 +506,11 @@ class SermonManager { // phpcs:ignore
 	 *
 	 * @since 2.15.7
 	 */
-	public static function sermon_is_audio_sermon(){
-
-
-		$args = array(
-			'posts_per_page'    => -1,
-			'post_type'         => 'wpfc_sermon',
-			'post_status'       => 'publish',
-			'meta_query' => array(
-				
-				array(
-					'key'     => 'sermon_audio',
-					'value'   => '',
-					'compare' => '!=',
-				),
-			)
-		);
-		
-		$posts_query = new WP_Query($args);
-		$the_count = $posts_query->post_count;
-		return $the_count;
-	}
+	
 	public static function register_scripts_styles() {
 		wp_register_script( 'wpfc-sm-fb-player', SM_URL . 'assets/vendor/js/facebook-video.js', array(), SM_VERSION );
 		
 		$is_archive = is_archive();
-		$is_audio_displayed = SermonManager::getOption( 'archive_player' );
-		$sermon_is_audio_sermon = SermonManager::sermon_is_audio_sermon();
-		if(!$is_archive || ($is_archive && $is_audio_displayed) ){
-			
-			if(!$is_archive || ($is_archive && $sermon_is_audio_sermon >0)){
-				wp_register_script( 'wpfc-sm-plyr', SM_URL . 'assets/vendor/js/plyr.polyfilled' . ( ( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) ? '' : '' ) . '.js', array(), '3.4.7', \SermonManager::getOption( 'player_js_footer' ) );
-				wp_register_script( 'wpfc-sm-plyr-loader', SM_URL . 'assets/js/plyr' . ( ( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) ? '' : '' ) . '.js', array( 'wpfc-sm-plyr' ), SM_VERSION );
-				wp_register_style( 'wpfc-sm-plyr-css', SM_URL . 'assets/vendor/css/plyr.min.css', array(), '3.4.7' );
-			}
-		}
 		
 		
 		
@@ -554,7 +527,6 @@ class SermonManager { // phpcs:ignore
 			wp_register_style( 'wpfc-sm-style-theme', get_stylesheet_directory_uri() . '/sermon.css', array( 'wpfc-sm-styles' ), SM_VERSION );
 		}
 	}
-
 	/**
 	 * Executes required actions.
 	 *
